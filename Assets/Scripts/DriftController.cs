@@ -68,9 +68,6 @@ public class DriftController : MonoBehaviour
     // Control signals
     float inThrottle = 0f;
     [HideInInspector] public float inTurn = 0f;
-    bool inReset = false;
-    bool isStuck = false;
-    bool autoReset = false;
     bool inSlip = false;
 
     bool hasParticles = false;
@@ -112,7 +109,6 @@ public class DriftController : MonoBehaviour
         {
             transform.position = spawnP;
             transform.rotation = spawnR;
-            inReset = true;
         }
     }
 
@@ -137,7 +133,7 @@ public class DriftController : MonoBehaviour
         gripX = gripX > 0f ? gripX : 0f;
 
         // A short raycast to check below
-        isGrounded = Physics.Raycast(transform.position, -transform.up, distToGround + 0.1f);
+        isGrounded = Physics.Raycast(transform.position, -transform.up, 5);
         if (!isGrounded)
         {
             rotate = 0f;
@@ -209,6 +205,9 @@ public class DriftController : MonoBehaviour
         // Get the local-axis velocity after rotation
         vel = transform.InverseTransformDirection(rigidBody.velocity);
 
+        Debug.Log("Vel:" + rigidBody.velocity.ToString());
+
+
         // Rotate the velocity vector
         // vel = pvel => Transfer all (full grip)
         if (isRotating)
@@ -217,15 +216,18 @@ public class DriftController : MonoBehaviour
             //vel = vel.normalized * speed;
         }
 
+
         // Sideway grip
         isRight = vel.x > 0f ? 1f : -1f;
         vel.x -= isRight * gripX * Time.deltaTime;  // Accelerate in opposing direction
         if (vel.x * isRight < 0f) vel.x = 0f;       // Check if changed polarity
 
+
         // Straight grip
         isForward = vel.z > 0f ? 1f : -1f;
         vel.z -= isForward * gripZ * Time.deltaTime;
         if (vel.z * isForward < 0f) vel.z = 0f;
+
 
         // Top speed
         if (vel.z > TopSpeed) vel.z = TopSpeed;
@@ -245,8 +247,6 @@ public class DriftController : MonoBehaviour
         inThrottle = Input.GetAxisRaw("Vertical");
         inTurn = Input.GetAxisRaw("Horizontal");
 
-        // Reset will turn false after the respawn is successful
-        inReset = inReset || Input.GetKeyDown(KeyCode.R);
     }
 
     // Executing the queued inputs
@@ -259,28 +259,6 @@ public class DriftController : MonoBehaviour
             gripZ = 0f;     // Remove straight grip if wheel is rotating
         }
 
-        if (autoReset)
-        {
-            // If stuck, check next frame too then reset
-            if (pvel.magnitude <= 0.01f)
-            {
-                inReset = isStuck;  // So, true on next frame
-                isStuck = true;
-            }
-            else
-            {
-                isStuck = false;
-            }
-        }
-
-        if (inReset)
-        {  // Reset
-            float y = transform.eulerAngles.y;
-            transform.eulerAngles = new Vector3(0, y, 0);
-            rigidBody.velocity = new Vector3(0, -1f, 0);
-            transform.position += Vector3.up * 2;
-            inReset = false;
-        }
 
         isRotating = false;
 
@@ -296,7 +274,8 @@ public class DriftController : MonoBehaviour
 
         bool needsParticles = Mathf.Abs(Vector3.Dot(transform.right, rigidBody.velocity)) > 5;
         // No drift particles while flying
-        if (!isGrounded){
+        if (!isGrounded)
+        {
             needsParticles = false;
         }
         Debug.Log(Mathf.Abs(Vector3.Dot(transform.right, rigidBody.velocity)));
