@@ -110,6 +110,12 @@ public class DriftController : MonoBehaviour
             transform.position = spawnP;
             transform.rotation = spawnR;
         }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+            rigidBody.velocity = new Vector3(0, 0, 0);
+        }
     }
 
     // Called once multiple times per frame 
