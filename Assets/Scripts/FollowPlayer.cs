@@ -9,11 +9,11 @@ public class FollowPlayer : MonoBehaviour
 
     void Start()
     {
-        transform.rotation = Quaternion.Euler(45, 0, 0);
+        transform.rotation = Quaternion.Euler(90, 0, 0);
     }
 
     void Update()
     {
-        transform.position = new Vector3(player.transform.position.x, player.transform.position.y + distance_to_player, player.transform.position.z - distance_to_player);
+        transform.position = new Vector3(player.transform.position.x, player.transform.position.y + distance_to_player, player.transform.position.z);
     }
 }
