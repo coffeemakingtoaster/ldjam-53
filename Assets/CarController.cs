@@ -6,6 +6,7 @@ public class CarController : MonoBehaviour
 {
     public GameObject target; // The current target GameObject for the car
     public float speed = 5f; // The speed at which the car moves towards the target
+    public float lookheight = 1f;
 
     private void Update()
     {
@@ -16,6 +17,7 @@ public class CarController : MonoBehaviour
             
             // Rotate the car to face the offset position
             Vector3 direction = targetPosition - transform.position;
+            direction = new Vector3(direction.x,direction.y+lookheight,direction.z);
             transform.rotation = Quaternion.LookRotation(direction);
             
             // Move the car towards the offset position at the specified speed
