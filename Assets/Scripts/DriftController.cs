@@ -311,7 +311,7 @@ public class DriftController : MonoBehaviour
             {
                 Transform vehicleTransform = VehicleModel.transform;
                 float xAngle = vehicleTransform.transform.localEulerAngles.x;
-                if (xAngle > 1 || xAngle < 369)
+                if (xAngle != 0)
                 {
                     int direction = 1;
                     if (xAngle < 180)
@@ -319,6 +319,10 @@ public class DriftController : MonoBehaviour
                         direction = -1;
                     }
                     xAngle += 50f * Time.deltaTime * direction;
+
+                    if (xAngle < 1.5 || xAngle > 358.5){
+                        xAngle = 0;
+                    }
                 }
                 vehicleTransform.localRotation = Quaternion.Euler(xAngle, vehicleTransform.transform.localEulerAngles.y, vehicleTransform.transform.localEulerAngles.z);
 
