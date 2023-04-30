@@ -302,6 +302,15 @@ public class DriftController : MonoBehaviour
                 {
                     xAngle += (50f * inTurn * Time.deltaTime);
                 }
+
+                if (xAngle >= maxTiltAngle && xAngle < 180)
+                {
+                    xAngle = maxTiltAngle - 0.1f;
+                }
+                else if (xAngle <= (360 - maxTiltAngle) && xAngle > 180)
+                {
+                    xAngle = (360 - maxTiltAngle) + 0.1f;
+                }
                 vehicleTransform.localRotation = Quaternion.Euler(xAngle, vehicleTransform.transform.localEulerAngles.y, vehicleTransform.transform.localEulerAngles.z);
             }
         }
@@ -320,7 +329,8 @@ public class DriftController : MonoBehaviour
                     }
                     xAngle += 50f * Time.deltaTime * direction;
 
-                    if (xAngle < 1.5 || xAngle > 358.5){
+                    if (xAngle < 1.5 || xAngle > 358.5)
+                    {
                         xAngle = 0;
                     }
                 }
