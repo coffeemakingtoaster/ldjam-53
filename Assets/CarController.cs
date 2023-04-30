@@ -24,7 +24,7 @@ public class CarController : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
 
             // Check if the car has reached the target
-            if (Vector3.Distance(transform.position, target.transform.position) < 0.5f)
+            if (Vector3.Distance(transform.position, target.transform.position) < 2f)
             {
                 // Set the target to a random neighboring MapMarker
                 MapMarker mapMarker = target.GetComponent<MapMarker>();
