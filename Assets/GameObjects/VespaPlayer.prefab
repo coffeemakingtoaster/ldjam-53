@@ -116,8 +116,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Accel: 15
   TopSpeed: 30
-  GripX: 12
-  GripZ: 3
+  GripX: 22
+  GripZ: 10
   Rotate: 140
   RotVel: 0.7
   CoM: {x: 0, y: 0.3, z: 0}
