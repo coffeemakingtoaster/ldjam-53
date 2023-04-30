@@ -116,8 +116,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Accel: 15
   TopSpeed: 30
-  GripX: 12
-  GripZ: 3
+  GripX: 22
+  GripZ: 10
   Rotate: 140
   RotVel: 0.7
   CoM: {x: 0, y: 0.3, z: 0}
@@ -135,8 +135,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.1
-      value: 0
+      time: 0.07916794
+      value: 0.96932983
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -168,8 +168,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.1
-      value: 0
+      time: 0.1625
+      value: 0.9717102
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -189,6 +189,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   SlipMod: 10
+  shouldTilt: 1
   inTurn: 0
 --- !u!1 &2749575390662153682
 GameObject:
@@ -10145,7 +10146,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f6dc9efbc6e1b624a94544fc484be5af, type: 3}
       propertyPath: m_Name
-      value: Vespa
+      value: Model
       objectReference: {fileID: 0}
     - target: {fileID: 8567717000986892130, guid: f6dc9efbc6e1b624a94544fc484be5af, type: 3}
       propertyPath: m_RenderingLayerMask
