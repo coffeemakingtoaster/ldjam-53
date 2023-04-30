@@ -41,7 +41,8 @@ public class DriftController : MonoBehaviour
     public float SlipMod = 20f;     // Basically widens the slip curve
                                     // (determine the min speed to reach max slip)
 
-    // AI-specific parameters
+    public bool shouldTilt = true;
+
     #endregion
 
     #region Intermediate
@@ -79,6 +80,8 @@ public class DriftController : MonoBehaviour
     Vector3 pvel = new Vector3(0f, 0f, 0f);
     #endregion
 
+    GameObject VehicleModel;
+
 
 
     // Use this for initialization
@@ -97,6 +100,8 @@ public class DriftController : MonoBehaviour
         rigidBody.centerOfMass = Vector3.Scale(groupCollider.extents, CoM);
 
         //distToGround = transform.position.y + 1f;
+
+        VehicleModel = transform.Find("Model").gameObject;
     }
 
     // Called once per frame
@@ -263,6 +268,7 @@ public class DriftController : MonoBehaviour
         {
             rigidBody.velocity += transform.forward * inThrottle * accel * Time.deltaTime;
             gripZ = 0f;     // Remove straight grip if wheel is rotating
+
         }
 
 
@@ -276,6 +282,11 @@ public class DriftController : MonoBehaviour
         {
             float dir = (pvel.z < 0) ? -1 : 1;    // To fix direction on reverse
             RotateGradConst(inTurn * dir);
+            if (shouldTilt)
+            {
+                Debug.Log("Tilting");
+                Transform vehicleTransform = VehicleModel.transform;
+            }
         }
 
         bool needsParticles = Mathf.Abs(Vector3.Dot(transform.right, rigidBody.velocity)) > 5;
@@ -288,22 +299,16 @@ public class DriftController : MonoBehaviour
 
         if (needsParticles && !hasParticles)
         {
-            ParticleSystem[] emmitters = GetComponentsInChildren<ParticleSystem>();
+            ParticleSystem emmitter = transform.Find("DriftParticles").GetComponent<ParticleSystem>();
 
-            foreach (ParticleSystem emitter in emmitters)
-            {
-                emitter.Play();
-            };
+            emmitter.Play();
             hasParticles = true;
         }
         else if (!needsParticles && hasParticles)
         {
-            ParticleSystem[] emmitters = GetComponentsInChildren<ParticleSystem>();
+            ParticleSystem emmitter = transform.Find("DriftParticles").GetComponent<ParticleSystem>();
 
-            foreach (ParticleSystem emitter in emmitters)
-            {
-                emitter.Stop();
-            };
+            emmitter.Stop();
             hasParticles = false;
         }
 
