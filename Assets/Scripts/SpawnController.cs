@@ -21,16 +21,14 @@ public class SpawnController : MonoBehaviour
         
         if (GameObject.FindObjectsOfType<CarController>().Length < maxObjects && Time.time - lastSpawnTime > spawnInterval)
         {
-            Debug.Log(GameObject.FindObjectsOfType<CarController>().Length);
             lastSpawnTime = Time.time;
             SpawnObject();
-            
         }
     }
 
-    private void SpawnObject()
+    public void SpawnObject()
     {
-        
+        Debug.Log("Spawning");
         GameObject prefab = prefabs[Random.Range(0, prefabs.Length)];
         GameObject newObject = Instantiate(prefab, transform.position, Quaternion.identity);
         newObject.GetComponent<CarController>().target = target;

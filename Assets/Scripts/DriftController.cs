@@ -82,6 +82,10 @@ public class DriftController : MonoBehaviour
 
     GameObject VehicleModel;
 
+    Vector3 initialPosition;
+
+    Quaternion initialRotation;
+
 
 
     // Use this for initialization
@@ -102,6 +106,8 @@ public class DriftController : MonoBehaviour
         //distToGround = transform.position.y + 1f;
 
         VehicleModel = transform.Find("Model").gameObject;
+        initialPosition = transform.position;
+        initialRotation = transform.rotation;
     }
 
     // Called once per frame
@@ -127,6 +133,11 @@ public class DriftController : MonoBehaviour
     // (according to physics setting)
     void FixedUpdate()
     {
+
+        if (transform.position.y < 14.7)
+        {
+            resetPlayer();
+        }
         #region Situational Checks
         accel = Accel;
         rotate = Rotate;
@@ -216,8 +227,6 @@ public class DriftController : MonoBehaviour
         // Get the local-axis velocity after rotation
         vel = transform.InverseTransformDirection(rigidBody.velocity);
 
-        Debug.Log("Vel:" + rigidBody.velocity.ToString());
-
 
         // Rotate the velocity vector
         // vel = pvel => Transfer all (full grip)
@@ -284,7 +293,6 @@ public class DriftController : MonoBehaviour
             RotateGradConst(inTurn * dir);
             if (shouldTilt)
             {
-                Debug.Log("Tilting");
                 Transform vehicleTransform = VehicleModel.transform;
             }
         }
@@ -295,7 +303,6 @@ public class DriftController : MonoBehaviour
         {
             needsParticles = false;
         }
-        Debug.Log(Mathf.Abs(Vector3.Dot(transform.right, rigidBody.velocity)));
 
         if (needsParticles && !hasParticles)
         {
@@ -377,6 +384,13 @@ public class DriftController : MonoBehaviour
             }
         }
         return bounds;
+    }
+
+    void resetPlayer()
+    {
+        Debug.Log("Good luck you are on your own");
+        transform.SetPositionAndRotation(initialPosition, initialRotation);
+        rigidBody.velocity = new Vector3(0, 0, 0);
     }
     #endregion
 }
