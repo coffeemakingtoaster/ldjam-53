@@ -22,6 +22,8 @@ public class DriftController : MonoBehaviour
     public float Rotate = 190;       // In degree/second
     public float RotVel = 0.8f;         // Ratio of forward velocity transfered on rotation
 
+    public float maxTiltAngle = 30f;
+
     // Center of mass, fraction of collider boundaries (= half of size)
     // 0 = center, and +/-1 = edge in the pos/neg direction.
     public Vector3 CoM = new Vector3(0f, .5f, 0f);
@@ -294,6 +296,32 @@ public class DriftController : MonoBehaviour
             if (shouldTilt)
             {
                 Transform vehicleTransform = VehicleModel.transform;
+                float xAngle = vehicleTransform.transform.localEulerAngles.x;
+                Debug.Log(xAngle);
+                if (xAngle < maxTiltAngle || xAngle > (360 - maxTiltAngle))
+                {
+                    xAngle += (50f * inTurn * Time.deltaTime);
+                }
+                vehicleTransform.localRotation = Quaternion.Euler(xAngle, vehicleTransform.transform.localEulerAngles.y, vehicleTransform.transform.localEulerAngles.z);
+            }
+        }
+        else
+        {
+            if (shouldTilt)
+            {
+                Transform vehicleTransform = VehicleModel.transform;
+                float xAngle = vehicleTransform.transform.localEulerAngles.x;
+                if (xAngle > 1 || xAngle < 369)
+                {
+                    int direction = 1;
+                    if (xAngle < 180)
+                    {
+                        direction = -1;
+                    }
+                    xAngle += 50f * Time.deltaTime * direction;
+                }
+                vehicleTransform.localRotation = Quaternion.Euler(xAngle, vehicleTransform.transform.localEulerAngles.y, vehicleTransform.transform.localEulerAngles.z);
+
             }
         }
 
