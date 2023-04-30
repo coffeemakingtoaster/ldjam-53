@@ -65,6 +65,7 @@ public class GameGod : MonoBehaviour
             int rand = Random.Range(0, 1000);
             if (rand == 69)
             {
+                Debug.Log("Creating Opfer");
                 List<GameObject> HitManSpawners = new List<GameObject>();
                 foreach (Transform t in GameObject.Find("OpferMutters").transform)
                 {

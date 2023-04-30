@@ -45,6 +45,8 @@ public class DropOffPoint : MonoBehaviour
 
     void OnTriggerEnter(Collider collider)
     {
+        Debug.Log("Colliding");
+        Debug.Log(collider.gameObject.tag);
         if (collider.gameObject.tag == "Player")
         {
             isActive = false;
