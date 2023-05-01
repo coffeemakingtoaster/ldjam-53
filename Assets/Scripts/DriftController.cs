@@ -2,13 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Global enum
-public enum Faction
-{
-    Player,
-    Enemy,
-    Neutral
-};
 
 public class DriftController : MonoBehaviour
 {
@@ -16,17 +9,28 @@ public class DriftController : MonoBehaviour
     #region Parameters
     public float Accel = 15.0f;         // In meters/second2
     public float TopSpeed = 30.0f;      // In meters/second
-    //public float Jump = 3.0f;           // In meters/second2
+
+    public float BoostTopSpeed = 60.0f;
+
     public float GripX = 12.0f;          // In meters/second2
     public float GripZ = 3.0f;          // In meters/second2
     public float Rotate = 190;       // In degree/second
     public float RotVel = 0.8f;         // Ratio of forward velocity transfered on rotation
 
+    public float BoostFactor = 0.5f;
+
+    public float GravityIncreaseHeight = 35f;
+
+    public float JumpFactor = 1f;
+
+    public float maxTiltAngle = 30f;
+
+    public float flyingGroundDistance = 0.2f;
+
     // Center of mass, fraction of collider boundaries (= half of size)
     // 0 = center, and +/-1 = edge in the pos/neg direction.
     public Vector3 CoM = new Vector3(0f, .5f, 0f);
 
-    public Faction carFaction = Faction.Player;  // Drop-down to select faction of this object
 
     // Ground & air angular drag
     // reduce stumbling time on ground but maintain on-air one
@@ -66,6 +70,10 @@ public class DriftController : MonoBehaviour
     bool isGrounded = true;
     bool isStumbling = false;
 
+    bool isBoosting = false;
+
+    bool isJumping = false;
+
     // Control signals
     float inThrottle = 0f;
     [HideInInspector] public float inTurn = 0f;
@@ -82,11 +90,15 @@ public class DriftController : MonoBehaviour
 
     GameObject VehicleModel;
 
+    GameObject TurbineModel;
+
+    GameObject JumperModel;
+
     Vector3 initialPosition;
 
     Quaternion initialRotation;
 
-
+    float initialRigidBodyMass;
 
     // Use this for initialization
     void Start()
@@ -106,8 +118,11 @@ public class DriftController : MonoBehaviour
         //distToGround = transform.position.y + 1f;
 
         VehicleModel = transform.Find("Model").gameObject;
+        TurbineModel = transform.Find("Turbines").gameObject;
+        JumperModel = transform.Find("Jumper").gameObject;
         initialPosition = transform.position;
         initialRotation = transform.rotation;
+        initialRigidBodyMass = rigidBody.mass;
     }
 
     // Called once per frame
@@ -127,6 +142,26 @@ public class DriftController : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, 0, 0);
             rigidBody.velocity = new Vector3(0, 0, 0);
         }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            ActivateTurbine();
+        }
+
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            ActivateJumper();
+        }
+    }
+
+    void ActivateTurbine()
+    {
+        TurbineModel.SetActive(true);
+    }
+
+    void ActivateJumper()
+    {
+        JumperModel.SetActive(true);
     }
 
     // Called once multiple times per frame 
@@ -138,7 +173,19 @@ public class DriftController : MonoBehaviour
         {
             resetPlayer();
         }
-        #region Situational Checks
+        else if (transform.position.y > GravityIncreaseHeight)
+        {
+            // Increase mass of object if it surpasses the intended height
+            rigidBody.mass = initialRigidBodyMass + ((transform.position.y - GravityIncreaseHeight) * (initialRigidBodyMass));
+        }
+        else if (rigidBody.mass > initialRigidBodyMass)
+        {
+            rigidBody.mass = initialRigidBodyMass;
+        }
+
+
+        InputKeyboard();
+
         accel = Accel;
         rotate = Rotate;
         gripX = GripX;
@@ -155,8 +202,9 @@ public class DriftController : MonoBehaviour
         gripX = gripX > 0f ? gripX : 0f;
 
         // A short raycast to check below
-        isGrounded = Physics.Raycast(transform.position, -transform.up, 5);
-        if (!isGrounded)
+        isGrounded = Physics.Raycast(transform.position, -transform.up, flyingGroundDistance);
+        Debug.DrawRay(transform.position, -transform.up, Color.green, flyingGroundDistance);
+        if (!isGrounded && !isBoosting)
         {
             rotate = 0f;
             accel = 0f;
@@ -203,27 +251,11 @@ public class DriftController : MonoBehaviour
         rotate *= (1f - 0.3f * slip);   // Overall rotation, (body + vector)
         rotVel *= (1f - slip);          // The vector modifier (just vector)
 
-        /* Should be:
-         * 1. Moving fast       : local forward, world forward.
-         * 2. Swerve left       : instantly rotate left, local sideways, world forward.
-         * 3. Wheels turn a little : small adjustments to the drifting arc.
-         * 3. Wheels turn right : everything the same, traction still gone.
-         * 4. Slowing down      : instantly rotate right, local forward, world left.
-         * 
-         * Update, solution: Hysteresis, gradual loss but snappy return.
-         */
-
-        #endregion
-
-        #region Logics
-        InputKeyboard();
 
 
         // Execute the commands
         Controller();   // pvel assigment in here
-        #endregion
 
-        #region Passives
         // Get the local-axis velocity after rotation
         vel = transform.InverseTransformDirection(rigidBody.velocity);
 
@@ -249,12 +281,49 @@ public class DriftController : MonoBehaviour
         if (vel.z * isForward < 0f) vel.z = 0f;
 
 
-        // Top speed
-        if (vel.z > TopSpeed) vel.z = TopSpeed;
+        // Enforce Top speed only when not boosting and not midair
+        if (vel.z > TopSpeed && !isBoosting && isGrounded) vel.z = TopSpeed;
+        if (vel.z > BoostTopSpeed && isBoosting) vel.z = BoostTopSpeed;
         else if (vel.z < -TopSpeed) vel.z = -TopSpeed;
 
         rigidBody.velocity = transform.TransformDirection(vel);
-        #endregion
+
+        // Prevent out of bounds boosting
+        if (isBoosting && (transform.position.y < GravityIncreaseHeight))
+        {
+            Debug.Log("Boosting");
+            rigidBody.AddForce(transform.forward * BoostFactor * accel, ForceMode.Impulse);
+        }
+
+        ParticleSystem[] boostParticleEmitters = TurbineModel.GetComponentsInChildren<ParticleSystem>();
+        // Representative value to indicate state of all related emitters
+        bool areBoostingParticlesActive = boostParticleEmitters[0].isPlaying;
+
+        // Start at boost start
+        if (isBoosting && !areBoostingParticlesActive)
+        {
+            foreach (ParticleSystem p in boostParticleEmitters)
+            {
+                p.Play();
+            }
+        }
+        // Stop Particles when boost ended
+        else if (!isBoosting && areBoostingParticlesActive)
+        {
+            foreach (ParticleSystem p in boostParticleEmitters)
+            {
+                p.Stop();
+                p.Clear();
+            }
+        }
+
+
+
+        if (isJumping && isGrounded)
+        {
+            Debug.Log("Jumping");
+            rigidBody.AddForce(transform.up * JumpFactor * accel, ForceMode.Impulse);
+        }
 
     }
 
@@ -267,6 +336,18 @@ public class DriftController : MonoBehaviour
         inThrottle = Input.GetAxisRaw("Vertical");
         inTurn = Input.GetAxisRaw("Horizontal");
 
+        isBoosting = TurbineModel.activeSelf;
+        if (isBoosting)
+        {
+            isBoosting = Input.GetAxisRaw("Fire3") > 0;
+        }
+
+        isJumping = JumperModel.activeSelf;
+        if (isJumping)
+        {
+            Debug.Log("Checking " + Input.GetAxisRaw("Jump").ToString());
+            isJumping = Input.GetAxisRaw("Jump") > 0;
+        }
     }
 
     // Executing the queued inputs
@@ -294,24 +375,63 @@ public class DriftController : MonoBehaviour
             if (shouldTilt)
             {
                 Transform vehicleTransform = VehicleModel.transform;
+                float xAngle = vehicleTransform.transform.localEulerAngles.x;
+                Debug.Log(xAngle);
+                if (xAngle < maxTiltAngle || xAngle > (360 - maxTiltAngle))
+                {
+                    xAngle += (50f * inTurn * Time.deltaTime);
+                }
+
+                if (xAngle >= maxTiltAngle && xAngle < 180)
+                {
+                    xAngle = maxTiltAngle - 0.1f;
+                }
+                else if (xAngle <= (360 - maxTiltAngle) && xAngle > 180)
+                {
+                    xAngle = (360 - maxTiltAngle) + 0.1f;
+                }
+                rotateModel(Quaternion.Euler(xAngle, vehicleTransform.transform.localEulerAngles.y, vehicleTransform.transform.localEulerAngles.z));
+            }
+        }
+        else
+        {
+            if (shouldTilt)
+            {
+                Transform vehicleTransform = VehicleModel.transform;
+                float xAngle = vehicleTransform.transform.localEulerAngles.x;
+                if (xAngle != 0)
+                {
+                    int direction = 1;
+                    if (xAngle < 180)
+                    {
+                        direction = -1;
+                    }
+                    xAngle += 50f * Time.deltaTime * direction;
+
+                    if (xAngle < 1.5 || xAngle > 358.5)
+                    {
+                        xAngle = 0;
+                    }
+                }
+                rotateModel(Quaternion.Euler(xAngle, vehicleTransform.transform.localEulerAngles.y, vehicleTransform.transform.localEulerAngles.z));
             }
         }
 
-        bool needsParticles = Mathf.Abs(Vector3.Dot(transform.right, rigidBody.velocity)) > 5;
+        bool needsDriftParticles = Mathf.Abs(Vector3.Dot(transform.right, rigidBody.velocity)) > 5;
         // No drift particles while flying
         if (!isGrounded)
         {
-            needsParticles = false;
+            needsDriftParticles = false;
         }
 
-        if (needsParticles && !hasParticles)
+        if (needsDriftParticles && !hasParticles)
         {
             ParticleSystem emmitter = transform.Find("DriftParticles").GetComponent<ParticleSystem>();
 
             emmitter.Play();
             hasParticles = true;
         }
-        else if (!needsParticles && hasParticles)
+        else if (!needsDriftParticles && hasParticles)
         {
             ParticleSystem emmitter = transform.Find("DriftParticles").GetComponent<ParticleSystem>();
 
@@ -391,6 +511,13 @@ public class DriftController : MonoBehaviour
         Debug.Log("Good luck you are on your own");
         transform.SetPositionAndRotation(initialPosition, initialRotation);
         rigidBody.velocity = new Vector3(0, 0, 0);
+    }
+
+    void rotateModel(Quaternion tilt)
+    {
+        VehicleModel.transform.localRotation = tilt;
+        TurbineModel.transform.localRotation = tilt;
+        JumperModel.transform.localRotation = tilt;
     }
     #endregion
 }

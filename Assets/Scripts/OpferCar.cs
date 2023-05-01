@@ -11,6 +11,8 @@ public class OpferCar : MonoBehaviour
 
     System.DateTime lastHitTime = System.DateTime.Now;
 
+    bool hasBeenHit = false;
+
     GameGod gameGod;
 
     // Start is called before the first frame update
@@ -39,6 +41,12 @@ public class OpferCar : MonoBehaviour
             Debug.Log("I am hit");
             hitPoints--;
             lastHitTime = System.DateTime.Now;
+            // Speed up on first hit
+            if (!hasBeenHit)
+            {
+                GetComponent<CarController>().speed = GetComponent<CarController>().speed * 1.3f;
+                hasBeenHit = true;
+            }
         }
     }
 }

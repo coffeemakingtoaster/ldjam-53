@@ -25,6 +25,8 @@ public class DropOffPoint : MonoBehaviour
     {
         GetComponentInChildren<MeshRenderer>().enabled = false;
         GetComponent<CapsuleCollider>().enabled = false;
+        GetComponentInChildren<ParticleSystem>().Stop();
+        GetComponentInChildren<ParticleSystem>().Clear();
         gameGod = GameObject.Find("GameGod").GetComponent<GameGod>();
     }
 
@@ -39,6 +41,9 @@ public class DropOffPoint : MonoBehaviour
                 isActive = false;
                 GetComponentInChildren<MeshRenderer>().enabled = false;
                 GetComponent<CapsuleCollider>().enabled = false;
+                GetComponentInChildren<ParticleSystem>().Stop();
+                GetComponentInChildren<ParticleSystem>().Clear();
+
             }
         }
     }
@@ -48,6 +53,7 @@ public class DropOffPoint : MonoBehaviour
         Debug.Log("Activated");
         GetComponentInChildren<MeshRenderer>().enabled = true;
         GetComponent<CapsuleCollider>().enabled = true;
+        GetComponentInChildren<ParticleSystem>().Play();
         isActive = true;
         activateTime = System.DateTime.Now;
         setMarker();
@@ -65,6 +71,9 @@ public class DropOffPoint : MonoBehaviour
             GetComponentInChildren<MeshRenderer>().enabled = false;
             gameGod.finishPizzaJob();
             GetComponent<CapsuleCollider>().enabled = false;
+            GetComponentInChildren<ParticleSystem>().Stop();
+            GetComponentInChildren<ParticleSystem>().Clear();
+
         }
     }
 

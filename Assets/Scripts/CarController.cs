@@ -36,6 +36,11 @@ public class CarController : MonoBehaviour
                 }
             }
         }
+        // Out of bounds
+        if (transform.position.y < 14.7){
+            Destroy(gameObject);
+            // TODO: Spawn new car
+        }
     }
 
     public void SetTarget(GameObject newTarget)
