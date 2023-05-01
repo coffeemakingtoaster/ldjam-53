@@ -150,10 +150,7 @@ public class DriftController : MonoBehaviour
 
 
 
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            ActivateJumper();
-        }
+        
     }
 
     public void ActivateTurbine()
