@@ -74,6 +74,8 @@ public class DriftController : MonoBehaviour
 
     bool isJumping = false;
 
+    bool isHonking = false;
+
     // Control signals
     float inThrottle = 0f;
     [HideInInspector] public float inTurn = 0f;
@@ -93,6 +95,8 @@ public class DriftController : MonoBehaviour
     GameObject TurbineModel;
 
     GameObject JumperModel;
+
+    GameObject HonkModel;
 
     Vector3 initialPosition;
 
@@ -120,6 +124,7 @@ public class DriftController : MonoBehaviour
         VehicleModel = transform.Find("Model").gameObject;
         TurbineModel = transform.Find("Turbines").gameObject;
         JumperModel = transform.Find("Jumper").gameObject;
+        HonkModel = transform.Find("Hooters").gameObject;
         initialPosition = transform.position;
         initialRotation = transform.rotation;
         initialRigidBodyMass = rigidBody.mass;
@@ -143,7 +148,7 @@ public class DriftController : MonoBehaviour
             rigidBody.velocity = new Vector3(0, 0, 0);
         }
 
-        
+
 
         if (Input.GetKeyDown(KeyCode.J))
         {
@@ -159,6 +164,11 @@ public class DriftController : MonoBehaviour
     public void ActivateJumper()
     {
         JumperModel.SetActive(true);
+    }
+
+    public void ActivateHonk()
+    {
+        HonkModel.SetActive(true);
     }
 
     // Called once multiple times per frame 
@@ -314,12 +324,19 @@ public class DriftController : MonoBehaviour
             }
         }
 
-
-
         if (isJumping && isGrounded)
         {
             //Debug.Log("Jumping");
             rigidBody.AddForce(transform.up * JumpFactor * accel, ForceMode.Impulse);
+        }
+
+        if (isHonking)
+        {
+            AudioSource source = HonkModel.GetComponent<AudioSource>();
+            if (!source.isPlaying)
+            {
+                source.Play();
+            }
         }
 
     }
@@ -344,6 +361,12 @@ public class DriftController : MonoBehaviour
         {
             //Debug.Log("Checking " + Input.GetAxisRaw("Jump").ToString());
             isJumping = Input.GetAxisRaw("Jump") > 0;
+        }
+
+        isHonking = HonkModel.activeSelf;
+        if (isHonking)
+        {
+            isHonking = Input.GetAxisRaw("Fire1") > 0;
         }
     }
 

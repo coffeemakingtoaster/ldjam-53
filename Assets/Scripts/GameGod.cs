@@ -132,7 +132,7 @@ public class GameGod : MonoBehaviour
     {
         if (cost <= gameState.money)
         {
-            Debug.Log("HEy");
+            Debug.Log("Hey");
             gameState.money -= cost;
             moneydisplay.transform.Find("Text").gameObject.GetComponent<TextMeshProUGUI>().text = (gameState.money.ToString() + "$");
             return true;
