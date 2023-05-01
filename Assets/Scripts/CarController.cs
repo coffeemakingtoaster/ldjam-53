@@ -5,7 +5,7 @@ using UnityEngine;
 public class CarController : MonoBehaviour
 {
     public GameObject target; // The current target GameObject for the car
-    public float speed = 5f; // The speed at which the car moves towards the target
+    public float speed = 3f; // The speed at which the car moves towards the target
     public float lookheight = 1f;
 
     private void Update()

@@ -24,14 +24,7 @@ public class Shop : MonoBehaviour
             canvasGroup.alpha = isShown ? 1 : 0;
             canvasGroup.blocksRaycasts = isShown;
         }
-        if (isShown)
-        {
-            Time.timeScale = 0; // pause the game
-        }
-        else
-        {
-            Time.timeScale = 1; // unpause the game
-        }
+       
     }
 
     public void buyBumpers(){
