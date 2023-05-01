@@ -178,10 +178,11 @@ public class DriftController : MonoBehaviour
             // Increase mass of object if it surpasses the intended height
             rigidBody.mass = initialRigidBodyMass + ((transform.position.y - GravityIncreaseHeight) * (initialRigidBodyMass));
         }
-        else if (rigidBody.mass > initialRigidBodyMass){
+        else if (rigidBody.mass > initialRigidBodyMass)
+        {
             rigidBody.mass = initialRigidBodyMass;
         }
-    
+
 
         InputKeyboard();
 
@@ -294,6 +295,30 @@ public class DriftController : MonoBehaviour
             rigidBody.AddForce(transform.forward * BoostFactor * accel, ForceMode.Impulse);
         }
 
+        ParticleSystem[] boostParticleEmitters = TurbineModel.GetComponentsInChildren<ParticleSystem>();
+        // Representative value to indicate state of all related emitters
+        bool areBoostingParticlesActive = boostParticleEmitters[0].isPlaying;
+
+        // Start at boost start
+        if (isBoosting && !areBoostingParticlesActive)
+        {
+            foreach (ParticleSystem p in boostParticleEmitters)
+            {
+                p.Play();
+            }
+        }
+        // Stop Particles when boost ended
+        else if (!isBoosting && areBoostingParticlesActive)
+        {
+            foreach (ParticleSystem p in boostParticleEmitters)
+            {
+                p.Stop();
+                p.Clear();
+            }
+        }
+
+
+
         if (isJumping && isGrounded)
         {
             Debug.Log("Jumping");
@@ -392,21 +417,21 @@ public class DriftController : MonoBehaviour
             }
         }
 
-        bool needsParticles = Mathf.Abs(Vector3.Dot(transform.right, rigidBody.velocity)) > 5;
+        bool needsDriftParticles = Mathf.Abs(Vector3.Dot(transform.right, rigidBody.velocity)) > 5;
         // No drift particles while flying
         if (!isGrounded)
         {
-            needsParticles = false;
+            needsDriftParticles = false;
         }
 
-        if (needsParticles && !hasParticles)
+        if (needsDriftParticles && !hasParticles)
         {
             ParticleSystem emmitter = transform.Find("DriftParticles").GetComponent<ParticleSystem>();
 
             emmitter.Play();
             hasParticles = true;
         }
-        else if (!needsParticles && hasParticles)
+        else if (!needsDriftParticles && hasParticles)
         {
             ParticleSystem emmitter = transform.Find("DriftParticles").GetComponent<ParticleSystem>();
 
