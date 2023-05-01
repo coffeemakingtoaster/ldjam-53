@@ -7,7 +7,8 @@ Shop --Done
 Car prefabs --Done
 OpferCar Model --Done
 HUD Time Bugs fixen --Done
-Uptown Stadium
+Uptown Stadium --Done
+Shop Onetime purchase --Done
 Farmland
 Drift Speed Back please
 Bumpers
