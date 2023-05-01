@@ -2,7 +2,7 @@ Player in Map  --Done
 Skybox    --Done
 Moneybug -- Done
 Despawn When Water -- Done 
-Max -> Maximum Job count and new jobs when old completed
+Maximum Job count and new jobs when old completed -- Done
 Shop --Done
 Car prefabs --Done
 OpferCar Model --Done

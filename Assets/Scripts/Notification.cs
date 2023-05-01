@@ -19,7 +19,7 @@ public class Notification : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -28,41 +28,46 @@ public class Notification : MonoBehaviour
         if (Timer > 0)
         {
             Timer -= Time.deltaTime;
-            
         }
-        string minutes = TimeSpan.FromSeconds((((int)Timer)+1)).Minutes.ToString();
-        int secondsInt = TimeSpan.FromSeconds((((int)Timer)+1)).Seconds;
-        
+        string minutes = TimeSpan.FromSeconds((((int)Timer) + 1)).Minutes.ToString();
+        int secondsInt = TimeSpan.FromSeconds((((int)Timer) + 1)).Seconds;
+
         string seconds = "";
-        if(secondsInt < 10){
-            seconds = ("0"+secondsInt.ToString());
+        if (secondsInt < 10)
+        {
+            seconds = ("0" + secondsInt.ToString());
         }
-        else{
-            seconds =  secondsInt.ToString();
+        else
+        {
+            seconds = secondsInt.ToString();
         }
-        timer.GetComponent<TextMeshProUGUI>().text = (minutes+":"+seconds);
+        timer.GetComponent<TextMeshProUGUI>().text = (minutes + ":" + seconds);
+        amount.GetComponent<TextMeshProUGUI>().text = (((int)(Reward + Timer)).ToString() + "$");
     }
 
-    public void setValues(int reward, int time, string addressName){
+    public void setValues(int reward, int time, string addressName)
+    {
         Reward = reward;
         Timer = time;
         AdressName = addressName;
-        amount.GetComponent<TextMeshProUGUI>().text = (Reward.ToString()+"$");
-        if(Pizza){
+        amount.GetComponent<TextMeshProUGUI>().text = (((int)(Reward + time)).ToString() + "$");
+        if (Pizza)
+        {
             address.GetComponent<TextMeshProUGUI>().text = AdressName;
         }
-        string minutes = TimeSpan.FromSeconds((((int)Timer)+1)).Minutes.ToString();
+        string minutes = TimeSpan.FromSeconds((((int)Timer) + 1)).Minutes.ToString();
         int secondsInt = TimeSpan.FromSeconds(Timer).Seconds;
-        
+
         string seconds = "";
-        if(secondsInt < 10){
-            seconds = ("0"+secondsInt.ToString());
+        if (secondsInt < 10)
+        {
+            seconds = ("0" + secondsInt.ToString());
         }
-        else{
-            seconds =  secondsInt.ToString();
+        else
+        {
+            seconds = secondsInt.ToString();
         }
 
-        timer.GetComponent<TextMeshProUGUI>().text = (minutes+":"+seconds);
-
+        timer.GetComponent<TextMeshProUGUI>().text = (minutes + ":" + seconds);
     }
 }

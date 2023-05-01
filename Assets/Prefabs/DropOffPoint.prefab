@@ -51,6 +51,7 @@ MonoBehaviour:
   Reward: 0
   dropOffLifeSpanSeconds: 600
   Minimap: {fileID: 0}
+  Map: {fileID: 0}
   Minimapmarker: {fileID: 0}
   notes: {fileID: 0}
   notePizza: {fileID: 0}
@@ -64,10 +65,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.86
+  m_Radius: 1.5122774
   m_Height: 4.404956
   m_Direction: 1
-  m_Center: {x: 0.000000047683717, y: 0.77, z: -0.00000009536743}
+  m_Center: {x: -0.65227723, y: 0.77, z: -0.00000011920929}
 --- !u!1 &1503336308484730508
 GameObject:
   m_ObjectHideFlags: 0

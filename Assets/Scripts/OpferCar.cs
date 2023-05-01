@@ -44,23 +44,22 @@ public class OpferCar : MonoBehaviour
         if ((hitPoints == 0 || transform.position.y < 14.7) && !isDestroyed)
         {
             GameObject exp = Instantiate(explosionParticles, transform.position, Quaternion.identity);
-            gameGod.finishHitmanJob(Reward);
+            double timeLeft = maxTime - ((System.DateTime.Now - activateTime).TotalSeconds);
+            gameGod.finishHitmanJob(Reward + (int)timeLeft);
             removeNoteGood();
             removeMarker();
             Destroy(exp, 2);
             Destroy(transform.gameObject, 2);
             isDestroyed = true;
-
         }
 
         if ((System.DateTime.Now - activateTime).TotalSeconds > maxTime && !isDestroyed)
         {
-
             removeMarker();
             removeNoteBad();
             Destroy(transform.gameObject);
             isDestroyed = true;
-
+            gameGod.finishHitmanJob(0, false);
         }
         if (isDestroyed)
         {
@@ -69,8 +68,6 @@ public class OpferCar : MonoBehaviour
         ownMarker.transform.position = new Vector3(transform.position.x / 7.7f + 310, Minimap.transform.position.y, transform.position.z / 7.7f + 5);
         ownMiniMarker.transform.position = new Vector3(transform.position.x / 7.7f, Minimap.transform.position.y, transform.position.z / 7.7f);
         ownMarkerDot.transform.position = new Vector3(transform.position.x / 7.7f + 300, Minimap.transform.position.y, transform.position.z / 7.7f);
-
-
     }
 
     void OnCollisionEnter(Collision collision)
