@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 class GameState
@@ -15,13 +16,27 @@ public class GameGod : MonoBehaviour
     public int MinimumSecondsBetweenPizzaJobs = 30;
     public int MinimumSecondsBetweenHitManJobs = 60;
 
-    public int PizzaDeliveryReward = 100;
+    public int HitmanRange = 20;
 
-    public int HitManJobReward = 200;
+    public int PizzaRange = 20;
 
-    int CurrentPizzaSpawnOffset = 0;
+    public int PizzaDeliveryRewardMin = 15;
+    public int PizzaDeliveryRewardMax = 50;
+
+    public int PizzaTimer = 40;
+
+    public int HitmanTimer = 60;
+
+    public int HitManJobRewardMin = 150;
+    public int HitManJobRewardMax = 300;
+
+    public int CurrentPizzaSpawnOffset = 0 ;
 
     int CurrentHitmanSpawnOffset = 0;
+
+    public GameObject moneydisplay;
+
+    
 
     GameState gameState = new GameState();
     System.DateTime lastSpawnedPizzaJob = System.DateTime.Now;
@@ -36,13 +51,12 @@ public class GameGod : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if ((System.DateTime.Now - lastSpawnedPizzaJob).Seconds > (MinimumSecondsBetweenPizzaJobs + CurrentPizzaSpawnOffset))
+        
+        
+        if ((System.DateTime.Now - lastSpawnedPizzaJob).TotalSeconds > (CurrentPizzaSpawnOffset))
         {
             //Debug.Log("Now is the chance to spawn new Pizza Jobs");
-            int rand = Random.Range(0, 1000);
-            if (rand == 69)
-            {
+            
                 List<GameObject> PizzaLocations = new List<GameObject>();
                 foreach (Transform t in GameObject.Find("DropOffPoints").transform)
                 {
@@ -53,40 +67,55 @@ public class GameGod : MonoBehaviour
                     }
                 }
                 GameObject ActivePizzaLocation = PizzaLocations[Random.Range(0, PizzaLocations.Count)];
-                ActivePizzaLocation.GetComponent<DropOffPoint>().ActivateDropOff();
+                //TODO: distance to player in pizzatimer calculaten
+                ActivePizzaLocation.GetComponent<DropOffPoint>().ActivateDropOff(Random.Range(PizzaDeliveryRewardMin,PizzaDeliveryRewardMax+1),PizzaTimer+Random.Range(-10,20));
                 lastSpawnedPizzaJob = System.DateTime.Now;
-                CurrentPizzaSpawnOffset = Random.Range(0, (MinimumSecondsBetweenPizzaJobs / 10));
-            }
+                
+                CurrentPizzaSpawnOffset = Random.Range(MinimumSecondsBetweenPizzaJobs, MinimumSecondsBetweenPizzaJobs+PizzaRange);
+            
         }
 
-        if ((System.DateTime.Now - lastSpawnedHitmanJob).Seconds > (MinimumSecondsBetweenHitManJobs + CurrentHitmanSpawnOffset))
+        if ((System.DateTime.Now - lastSpawnedHitmanJob).TotalSeconds > (CurrentHitmanSpawnOffset))
         {
             //Debug.Log("Now is the chance to spawn new Hitman Jobs");
-            int rand = Random.Range(0, 1000);
-            if (rand == 69)
-            {
+            
                 Debug.Log("Creating Opfer");
                 List<GameObject> HitManSpawners = new List<GameObject>();
                 foreach (Transform t in GameObject.Find("OpferMutters").transform)
                 {
                     HitManSpawners.Add(t.gameObject);
                 }
-                HitManSpawners[Random.Range(0, HitManSpawners.Count)].GetComponent<SpawnController>().SpawnObject();
+                HitManSpawners[Random.Range(0, HitManSpawners.Count)].GetComponent<SpawnOpferController>().SpawnOpfer(Random.Range(HitManJobRewardMin,HitManJobRewardMax+1),HitmanTimer+Random.Range(-10,20));
                 lastSpawnedHitmanJob = System.DateTime.Now;
-                CurrentHitmanSpawnOffset = Random.Range(0, (MinimumSecondsBetweenPizzaJobs / 10));
-            }
+                CurrentHitmanSpawnOffset = Random.Range(MinimumSecondsBetweenHitManJobs,MinimumSecondsBetweenHitManJobs+HitmanRange);
+            
         }
     }
 
-    public void finishPizzaJob()
+    public void finishPizzaJob(int reward)
     {
-        gameState.money += PizzaDeliveryReward;
+        gameState.money += reward;
+        moneydisplay.transform.Find("Text").gameObject.GetComponent<TextMeshProUGUI>().text = (gameState.money.ToString()+"$");
         Debug.Log("We rich now");
+
     }
 
-    public void finishHitmanJob()
+    public void finishHitmanJob(int reward)
     {
-        gameState.money += HitManJobReward;
+        gameState.money += reward;
+        moneydisplay.transform.Find("Text").gameObject.GetComponent<TextMeshProUGUI>().text = (gameState.money.ToString()+"$");
         Debug.Log("We even richer now");
     }
+
+    public bool buySomething(int cost){
+        if(cost<= gameState.money){
+            Debug.Log("HEy");
+            gameState.money -= cost;
+            moneydisplay.transform.Find("Text").gameObject.GetComponent<TextMeshProUGUI>().text = (gameState.money.ToString()+"$");
+            return true;
+        }
+        return false;
+    }
+
+
 }

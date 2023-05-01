@@ -143,10 +143,7 @@ public class DriftController : MonoBehaviour
             rigidBody.velocity = new Vector3(0, 0, 0);
         }
 
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            ActivateTurbine();
-        }
+        
 
         if (Input.GetKeyDown(KeyCode.J))
         {
@@ -154,12 +151,12 @@ public class DriftController : MonoBehaviour
         }
     }
 
-    void ActivateTurbine()
+    public void ActivateTurbine()
     {
         TurbineModel.SetActive(true);
     }
 
-    void ActivateJumper()
+    public void ActivateJumper()
     {
         JumperModel.SetActive(true);
     }
@@ -291,7 +288,7 @@ public class DriftController : MonoBehaviour
         // Prevent out of bounds boosting
         if (isBoosting && (transform.position.y < GravityIncreaseHeight))
         {
-            Debug.Log("Boosting");
+            //Debug.Log("Boosting");
             rigidBody.AddForce(transform.forward * BoostFactor * accel, ForceMode.Impulse);
         }
 
@@ -321,7 +318,7 @@ public class DriftController : MonoBehaviour
 
         if (isJumping && isGrounded)
         {
-            Debug.Log("Jumping");
+            //Debug.Log("Jumping");
             rigidBody.AddForce(transform.up * JumpFactor * accel, ForceMode.Impulse);
         }
 
@@ -345,7 +342,7 @@ public class DriftController : MonoBehaviour
         isJumping = JumperModel.activeSelf;
         if (isJumping)
         {
-            Debug.Log("Checking " + Input.GetAxisRaw("Jump").ToString());
+            //Debug.Log("Checking " + Input.GetAxisRaw("Jump").ToString());
             isJumping = Input.GetAxisRaw("Jump") > 0;
         }
     }
@@ -376,7 +373,7 @@ public class DriftController : MonoBehaviour
             {
                 Transform vehicleTransform = VehicleModel.transform;
                 float xAngle = vehicleTransform.transform.localEulerAngles.x;
-                Debug.Log(xAngle);
+                //Debug.Log(xAngle);
                 if (xAngle < maxTiltAngle || xAngle > (360 - maxTiltAngle))
                 {
                     xAngle += (50f * inTurn * Time.deltaTime);
@@ -508,7 +505,7 @@ public class DriftController : MonoBehaviour
 
     void resetPlayer()
     {
-        Debug.Log("Good luck you are on your own");
+        //Debug.Log("Good luck you are on your own");
         transform.SetPositionAndRotation(initialPosition, initialRotation);
         rigidBody.velocity = new Vector3(0, 0, 0);
     }

@@ -9,6 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1387766874559265312}
+  - component: {fileID: 8020901023278457911}
+  - component: {fileID: 4412694780386049573}
   m_Layer: 0
   m_Name: SmallHouse
   m_TagString: Untagged
@@ -32,6 +34,32 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8020901023278457911
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 573647920171596068}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 7.1427317, y: 8.817065, z: 16.293198}
+  m_Center: {x: -3.3636365, y: 4.444281, z: 3.5797768}
+--- !u!65 &4412694780386049573
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 573647920171596068}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 6.9967666, y: 8.699073, z: 11.58139}
+  m_Center: {x: 3.5593712, y: 4.468558, z: 1.1896808}
 --- !u!1001 &8482642268195282989
 PrefabInstance:
   m_ObjectHideFlags: 0

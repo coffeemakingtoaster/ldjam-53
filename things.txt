@@ -1,0 +1,22 @@
+Player in Map  --Done
+Skybox    --Done
+Moneybug -> Max
+Despawn When Water -> Max
+Max -> Maximum Job count and new jobs when old completed
+Shop --Done
+Car prefabs --Done
+OpferCar Model --Done
+HUD Time Bugs fixen --Done
+Uptown Stadium
+Farmland
+Drift Speed Back please
+Bumpers
+More CityAssets
+Main Menu
+Phone Menus
+Escape Menu
+Settings
+Music / Sounds
+Better Floor Textures
+Animated quests
+Animated Hud
