@@ -28,41 +28,46 @@ public class OpferCar : MonoBehaviour
 
     private int maxTime;
 
+    private bool isDestroyed = false;
+
     // Start is called before the first frame update
     void Start()
     {
         gameGod = GameObject.Find("GameGod").GetComponent<GameGod>();
         activateTime = System.DateTime.Now;
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (hitPoints == 0 || transform.position.y < 14.7)
+        if ((hitPoints == 0 || transform.position.y < 14.7) && !isDestroyed)
         {
             GameObject exp = Instantiate(explosionParticles, transform.position, Quaternion.identity);
-            gameGod.finishHitmanJob(Reward);
-            Destroy(exp, 2);
-            Destroy(transform.gameObject, 2);
+            double timeLeft = maxTime - ((System.DateTime.Now - activateTime).TotalSeconds);
+            gameGod.finishHitmanJob(Reward + (int)timeLeft);
             removeNoteGood();
             removeMarker();
-            
+            Destroy(exp, 2);
+            Destroy(transform.gameObject, 2);
+            isDestroyed = true;
         }
-        
-        if ((System.DateTime.Now - activateTime).TotalSeconds > maxTime)
-            {
-                
-                removeMarker();
-                removeNoteBad();
-                Destroy(transform.gameObject);
 
-            }
-        ownMarker.transform.position = new Vector3(transform.position.x/7.7f+310,Minimap.transform.position.y,transform.position.z/7.7f+5);
-        ownMiniMarker.transform.position = new Vector3(transform.position.x/7.7f,Minimap.transform.position.y,transform.position.z/7.7f);
-        ownMarkerDot.transform.position = new Vector3(transform.position.x/7.7f+300,Minimap.transform.position.y,transform.position.z/7.7f);
-        
-
+        if ((System.DateTime.Now - activateTime).TotalSeconds > maxTime && !isDestroyed)
+        {
+            removeMarker();
+            removeNoteBad();
+            Destroy(transform.gameObject);
+            isDestroyed = true;
+            gameGod.finishHitmanJob(0, false);
+        }
+        if (isDestroyed)
+        {
+            return;
+        }
+        ownMarker.transform.position = new Vector3(transform.position.x / 7.7f + 310, Minimap.transform.position.y, transform.position.z / 7.7f + 5);
+        ownMiniMarker.transform.position = new Vector3(transform.position.x / 7.7f, Minimap.transform.position.y, transform.position.z / 7.7f);
+        ownMarkerDot.transform.position = new Vector3(transform.position.x / 7.7f + 300, Minimap.transform.position.y, transform.position.z / 7.7f);
     }
 
     void OnCollisionEnter(Collision collision)
@@ -81,7 +86,8 @@ public class OpferCar : MonoBehaviour
         }
     }
 
-    public void setValues(int reward, int timer,Canvas MM, Canvas M, GameObject MMM){
+    public void setValues(int reward, int timer, Canvas MM, Canvas M, GameObject MMM)
+    {
         notes = GameObject.Find("Notifications");
         Reward = reward;
         Timer = timer;
@@ -94,29 +100,34 @@ public class OpferCar : MonoBehaviour
 
     }
 
-    void setNotification() {
-    
-    ownnote = Instantiate(noteKill, new Vector3(141 + (notes.transform.childCount * 250), 811, 0), Quaternion.Euler(0, 0, 0), notes.transform);
-    ownnote.GetComponent<Notification>().setValues(Reward,Timer,"");
-    
+    void setNotification()
+    {
+
+        ownnote = Instantiate(noteKill, new Vector3(141 + (notes.transform.childCount * 250), 811, 0), Quaternion.Euler(0, 0, 0), notes.transform);
+        ownnote.GetComponent<Notification>().setValues(Reward, Timer, "");
+
     }
 
-    void removeNoteGood(){
+    void removeNoteGood()
+    {
         Destroy(ownnote);
     }
 
-    void removeNoteBad(){
+    void removeNoteBad()
+    {
         Destroy(ownnote);
     }
 
-    void setMarker(){
-        ownMiniMarker = Instantiate(Minimapmarker, new Vector3(transform.position.x/7.7f,Minimap.transform.position.y,transform.position.z/7.7f), Quaternion.Euler(90, 0, 0), Minimap.transform);
-        ownMarkerDot = Instantiate(Minimapmarker, new Vector3(transform.position.x/7.7f+300,Minimap.transform.position.y,transform.position.z/7.7f), Quaternion.Euler(90, 0, 0), Map.transform);
-        ownMarker = Instantiate(noteKill, new Vector3(transform.position.x/7.7f+310,Minimap.transform.position.y,transform.position.z/7.7f+5), Quaternion.Euler(90, 0, 0), Map.transform);
-        ownMarker.GetComponent<Notification>().setValues(Reward,Timer,"");
-        ownMarker.transform.localScale = new Vector3(1.5f,1.5f,1.5f);
+    void setMarker()
+    {
+        ownMiniMarker = Instantiate(Minimapmarker, new Vector3(transform.position.x / 7.7f, Minimap.transform.position.y, transform.position.z / 7.7f), Quaternion.Euler(90, 0, 0), Minimap.transform);
+        ownMarkerDot = Instantiate(Minimapmarker, new Vector3(transform.position.x / 7.7f + 300, Minimap.transform.position.y, transform.position.z / 7.7f), Quaternion.Euler(90, 0, 0), Map.transform);
+        ownMarker = Instantiate(noteKill, new Vector3(transform.position.x / 7.7f + 310, Minimap.transform.position.y, transform.position.z / 7.7f + 5), Quaternion.Euler(90, 0, 0), Map.transform);
+        ownMarker.GetComponent<Notification>().setValues(Reward, Timer, "");
+        ownMarker.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
     }
-    void removeMarker(){
+    void removeMarker()
+    {
         Destroy(ownMiniMarker);
         Destroy(ownMarker);
         Destroy(ownMarkerDot);
