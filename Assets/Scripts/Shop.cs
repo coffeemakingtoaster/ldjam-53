@@ -27,27 +27,31 @@ public class Shop : MonoBehaviour
        
     }
 
-    public void buyBumpers(){
-        if(gameGod.GetComponent<GameGod>().buySomething(200)){
+    public void buyHonk()
+    {
+        if (gameGod.GetComponent<GameGod>().buySomething(2000))
+        {
+            player.GetComponent<DriftController>().ActivateHonk();
             Debug.Log("Buying Bumpers");
         }
     }
 
-    public void buyJumpers(){
-        if(gameGod.GetComponent<GameGod>().buySomething(500)){
+    public void buyJumpers()
+    {
+        if (gameGod.GetComponent<GameGod>().buySomething(500))
+        {
             player.GetComponent<DriftController>().ActivateJumper();
             Debug.Log("Buying Jumpers");
         }
 
     }
 
-    public void buyJets(){
-        if(gameGod.GetComponent<GameGod>().buySomething(1000)){
+    public void buyJets()
+    {
+        if (gameGod.GetComponent<GameGod>().buySomething(1000))
+        {
             player.GetComponent<DriftController>().ActivateTurbine();
             Debug.Log("Buying Jumpers");
         }
-
     }
-    
-    
-   }
+}

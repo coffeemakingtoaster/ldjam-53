@@ -6461,11 +6461,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d06c6b2c8b3c287448d504e294863f3d, type: 3}
---- !u!1 &315898561 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1779785119429222808, guid: d0dbfaa25dc6b5f4d86aad9f9f13515a, type: 3}
-  m_PrefabInstance: {fileID: 1566322636}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &316817397 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5552427567579696885, guid: d0dbfaa25dc6b5f4d86aad9f9f13515a, type: 3}
@@ -13070,10 +13065,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddb10cf6496349645bc94f32c683a986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InactiveLocations: []
-  ActiveLocations: []
-  ToRemove: []
-  marker: {fileID: 315898561}
 --- !u!1001 &661659221
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16023,7 +16014,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 200$
+  m_text: 2000$
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -30108,7 +30099,7 @@ GameObject:
   - component: {fileID: 1503657925}
   - component: {fileID: 1503657924}
   m_Layer: 5
-  m_Name: Bumpers
+  m_Name: Honk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30182,7 +30173,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1495757837}
         m_TargetAssemblyTypeName: Shop, Assembly-CSharp
-        m_MethodName: buyBumpers
+        m_MethodName: buyHonk
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -33680,7 +33671,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Bumpers
+  m_text: Honk
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
