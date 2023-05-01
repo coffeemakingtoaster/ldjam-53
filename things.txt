@@ -1,7 +1,7 @@
 Player in Map  --Done
 Skybox    --Done
-Moneybug -> Max
-Despawn When Water -> Max
+Moneybug -- Done
+Despawn When Water -- Done 
 Max -> Maximum Job count and new jobs when old completed
 Shop --Done
 Car prefabs --Done
