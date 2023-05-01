@@ -12,6 +12,15 @@ public class DropOffPoint : MonoBehaviour
 
     System.DateTime activateTime;
 
+    public Canvas Minimap;
+    
+    public GameObject Minimapmarker;
+
+    private GameObject ownMarker;
+
+    public GameObject notes;
+
+    public GameObject notePizza;
     void Awake()
     {
         GetComponentInChildren<MeshRenderer>().enabled = false;
@@ -41,6 +50,8 @@ public class DropOffPoint : MonoBehaviour
         GetComponent<CapsuleCollider>().enabled = true;
         isActive = true;
         activateTime = System.DateTime.Now;
+        setMarker();
+        setNotification();
     }
 
     void OnTriggerEnter(Collider collider)
@@ -49,6 +60,7 @@ public class DropOffPoint : MonoBehaviour
         Debug.Log(collider.gameObject.tag);
         if (collider.gameObject.tag == "Player")
         {
+            removeMarker();
             isActive = false;
             GetComponentInChildren<MeshRenderer>().enabled = false;
             gameGod.finishPizzaJob();
@@ -59,6 +71,20 @@ public class DropOffPoint : MonoBehaviour
     public bool isPointActive()
     {
         return isActive;
+    }
+
+    void setMarker(){
+        ownMarker = Instantiate(Minimapmarker, new Vector3(transform.position.x/7.7f,Minimap.transform.position.y,transform.position.z/7.7f), Quaternion.Euler(90, 0, 0), Minimap.transform);
+
+    }   
+
+    void removeMarker(){
+        Destroy(ownMarker);
+    }
+
+    void setNotification(){
+        print(notes.transform.childCount);
+        Instantiate(notePizza, new Vector3(141+(notes.transform.childCount*250),780,0),Quaternion.Euler(0, 0, 0), notes.transform);
     }
 
 }
