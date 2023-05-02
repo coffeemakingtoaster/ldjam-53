@@ -56,6 +56,7 @@ public class DropOffPoint : MonoBehaviour
                 GetComponent<CapsuleCollider>().enabled = false;
                 GetComponentInChildren<ParticleSystem>().Stop();
                 GetComponentInChildren<ParticleSystem>().Clear();
+                gameGod.finishPizzaJob(0,false);
 
             }
         }
