@@ -10,6 +10,8 @@ public class Shop : MonoBehaviour
 
     public GameObject player;
     private CanvasGroup canvasGroup;
+
+    private int activeButtonCount = 3;
     void Start()
     {
         canvasGroup = GetComponent<CanvasGroup>();
@@ -24,7 +26,9 @@ public class Shop : MonoBehaviour
             canvasGroup.alpha = isShown ? 1 : 0;
             canvasGroup.blocksRaycasts = isShown;
         }
-       
+        if (activeButtonCount == 0){
+            canvasGroup.transform.Find("EmptyShop").transform.gameObject.SetActive(true);
+        }
     }
 
     public void buyHonk()
@@ -33,6 +37,8 @@ public class Shop : MonoBehaviour
         {
             player.GetComponent<DriftController>().ActivateHonk();
             Debug.Log("Buying Bumpers");
+             canvasGroup.transform.Find("Honk").transform.gameObject.SetActive(false);
+             activeButtonCount--;
         }
     }
 
@@ -42,6 +48,8 @@ public class Shop : MonoBehaviour
         {
             player.GetComponent<DriftController>().ActivateJumper();
             Debug.Log("Buying Jumpers");
+             canvasGroup.transform.Find("Jumpers").transform.gameObject.SetActive(false);
+             activeButtonCount--;
         }
 
     }
@@ -52,6 +60,8 @@ public class Shop : MonoBehaviour
         {
             player.GetComponent<DriftController>().ActivateTurbine();
             Debug.Log("Buying Jumpers");
+            canvasGroup.transform.Find("Jets").transform.gameObject.SetActive(false);
+            activeButtonCount--;
         }
     }
 }
