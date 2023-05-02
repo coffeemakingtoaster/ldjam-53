@@ -18,7 +18,7 @@ public class DropOffPoint : MonoBehaviour
     public Canvas Minimap;
 
     public Canvas Map;
-
+    
     public GameObject Minimapmarker;
 
     private GameObject ownMiniMarker;
@@ -56,7 +56,6 @@ public class DropOffPoint : MonoBehaviour
                 GetComponent<CapsuleCollider>().enabled = false;
                 GetComponentInChildren<ParticleSystem>().Stop();
                 GetComponentInChildren<ParticleSystem>().Clear();
-                gameGod.finishPizzaJob(0, false);
 
             }
         }
@@ -72,24 +71,26 @@ public class DropOffPoint : MonoBehaviour
         GetComponentInChildren<ParticleSystem>().Play();
         isActive = true;
         activateTime = System.DateTime.Now;
-
+        
         setNotification();
         setMarker();
     }
 
     void OnTriggerEnter(Collider collider)
     {
+        //Debug.Log("Colliding");
+        //Debug.Log(collider.gameObject.tag);
         if (collider.gameObject.tag == "Player")
         {
             removeMarker();
             removeNotificationGood();
             isActive = false;
             GetComponentInChildren<MeshRenderer>().enabled = false;
-            double timeLeft = dropOffLifeSpanSeconds - ((System.DateTime.Now - activateTime).TotalSeconds);
-            gameGod.finishPizzaJob(Reward + (int)timeLeft);
+            gameGod.finishPizzaJob(Reward);
             GetComponent<CapsuleCollider>().enabled = false;
             GetComponentInChildren<ParticleSystem>().Stop();
             GetComponentInChildren<ParticleSystem>().Clear();
+
         }
     }
 
@@ -98,37 +99,32 @@ public class DropOffPoint : MonoBehaviour
         return isActive;
     }
 
-    void setMarker()
-    {
-        ownMiniMarker = Instantiate(Minimapmarker, new Vector3(transform.position.x / 7.7f, Minimap.transform.position.y, transform.position.z / 7.7f), Quaternion.Euler(90, 0, 0), Minimap.transform);
-        ownMarkerDot = Instantiate(Minimapmarker, new Vector3(transform.position.x / 7.7f + 300, Minimap.transform.position.y, transform.position.z / 7.7f), Quaternion.Euler(90, 0, 0), Map.transform);
-        ownMarker = Instantiate(notePizza, new Vector3(transform.position.x / 7.7f + 310, Minimap.transform.position.y, transform.position.z / 7.7f + 5), Quaternion.Euler(90, 0, 0), Map.transform);
-        ownMarker.GetComponent<Notification>().setValues(Reward, dropOffLifeSpanSeconds, addressName);
-        ownMarker.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-    }
+    void setMarker(){
+        ownMiniMarker = Instantiate(Minimapmarker, new Vector3(transform.position.x/7.7f,Minimap.transform.position.y,transform.position.z/7.7f), Quaternion.Euler(90, 0, 0), Minimap.transform);
+        ownMarkerDot = Instantiate(Minimapmarker, new Vector3(transform.position.x/7.7f+300,Minimap.transform.position.y,transform.position.z/7.7f), Quaternion.Euler(90, 0, 0), Map.transform);
+        ownMarker = Instantiate(notePizza, new Vector3(transform.position.x/7.7f+310,Minimap.transform.position.y,transform.position.z/7.7f+5), Quaternion.Euler(90, 0, 0), Map.transform);
+        ownMarker.GetComponent<Notification>().setValues(Reward,dropOffLifeSpanSeconds,addressName);
+        ownMarker.transform.localScale = new Vector3(1.5f,1.5f,1.5f);
+    }   
 
-    void removeMarker()
-    {
+    void removeMarker(){
         Destroy(ownMiniMarker);
         Destroy(ownMarker);
         Destroy(ownMarkerDot);
     }
 
-    void setNotification()
-    {
-
-        ownnote = Instantiate(notePizza, new Vector3(141 + (notes.transform.childCount * 250), 811, 0), Quaternion.Euler(0, 0, 0), notes.transform);
-        ownnote.GetComponent<Notification>().setValues(Reward, dropOffLifeSpanSeconds, addressName);
-
+    void setNotification() {
+    
+    ownnote = Instantiate(notePizza, new Vector3(141 + (notes.transform.childCount * 250), 811, 0), Quaternion.Euler(0, 0, 0), notes.transform);
+    ownnote.GetComponent<Notification>().setValues(Reward,dropOffLifeSpanSeconds,addressName);
+    
     }
 
-    void removeNotificationGood()
-    {
+    void removeNotificationGood(){
         Destroy(ownnote);
     }
 
-    void removeNotificationBad()
-    {
+    void removeNotificationBad(){
         Destroy(ownnote);
     }
 
