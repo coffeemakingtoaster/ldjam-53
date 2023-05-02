@@ -13,6 +13,12 @@ class GameState
 public class GameGod : MonoBehaviour
 {
 
+
+    public AudioSource newjobSound;
+
+    public AudioSource successAudio;
+
+    public AudioSource failure;
     public int MinimumSecondsBetweenPizzaJobs = 30;
     public int MinimumSecondsBetweenHitManJobs = 60;
 
@@ -68,6 +74,10 @@ public class GameGod : MonoBehaviour
             List<GameObject> PizzaLocations = new List<GameObject>();
             foreach (Transform t in GameObject.Find("DropOffPoints").transform)
             {
+                if (!newjobSound.isPlaying)
+                {
+                newjobSound.Play();
+                }
                 // Ignore already active
                 if (!t.gameObject.GetComponent<DropOffPoint>().isPointActive())
                 {
@@ -90,6 +100,10 @@ public class GameGod : MonoBehaviour
             //Debug.Log("Now is the chance to spawn new Hitman Jobs");
 
             Debug.Log("Creating Opfer");
+             if (!newjobSound.isPlaying && !failure.isPlaying && !successAudio.isPlaying)
+            {
+            newjobSound.Play();
+            }
             List<GameObject> HitManSpawners = new List<GameObject>();
             foreach (Transform t in GameObject.Find("OpferMutters").transform)
             {
@@ -105,10 +119,12 @@ public class GameGod : MonoBehaviour
     public void finishPizzaJob(int reward, bool success = true)
     {
         if (!success)
-        {
+        {   
+            failure.Play();
             currentPizzaJobCount--;
             return;
         }
+        successAudio.Play();
         gameState.money += reward;
         moneydisplay.transform.Find("Text").gameObject.GetComponent<TextMeshProUGUI>().text = (gameState.money.ToString() + "$");
         Debug.Log("We rich now");
@@ -119,9 +135,11 @@ public class GameGod : MonoBehaviour
     {
         if (!success)
         {
+            failure.Play();
             currentHitmanJobCount--;
             return;
         }
+        successAudio.Play();
         gameState.money += reward;
         moneydisplay.transform.Find("Text").gameObject.GetComponent<TextMeshProUGUI>().text = (gameState.money.ToString() + "$");
         Debug.Log("We even richer now");
