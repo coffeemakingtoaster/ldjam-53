@@ -38,7 +38,7 @@ public class Shop : MonoBehaviour
 
     public void buyJumpers()
     {
-        if (gameGod.GetComponent<GameGod>().buySomething(500))
+        if (gameGod.GetComponent<GameGod>().buySomething(200))
         {
             player.GetComponent<DriftController>().ActivateJumper();
             Debug.Log("Buying Jumpers");
@@ -48,7 +48,7 @@ public class Shop : MonoBehaviour
 
     public void buyJets()
     {
-        if (gameGod.GetComponent<GameGod>().buySomething(1000))
+        if (gameGod.GetComponent<GameGod>().buySomething(500))
         {
             player.GetComponent<DriftController>().ActivateTurbine();
             Debug.Log("Buying Jumpers");
